@@ -1,0 +1,66 @@
+MAILTO=scot.floess@gmail.com
+MAILFROM=sfloess@nc.rr.com
+#MAILFROM=sfloess@services.flossware.org
+
+#00 00  *  * 01 ssh admin-ap     -p 2222   "time opkg update && opkg upgrade"
+#10 00  *  * 01 ssh den-ap       -p 2222   "time opkg update && opkg upgrade"
+#20 00  *  * 01 ssh basement-ap  -p 2222   "time opkg update && opkg upgrade"
+#30 00  *  * 01 ssh server-ap    -p 2222   "time opkg update && opkg upgrade"
+#40 00  *  * 01 ssh office-ap    -p 2222   "time opkg update && opkg upgrade"
+#50 00  *  * 01 ssh nas          -p 2222   "time ipkg update && ipkg upgrade"
+
+00 01  *  * 01 ssh admin-ap    "time (apt update -y ; apt upgrade -y ; apt autoremove -y ; apt clean -y)"
+#30 01  *  * 01 ssh basement-ap "time (apt update -y ; apt upgrade -y ; apt autoremove -y ; apt clean -y)"
+00 02  *  * 01 ssh server-ap   "time (apt update -y ; apt upgrade -y ; apt autoremove -y ; apt clean -y)"
+30 02  *  * 01 ssh desktop-ap  "time (apt update -y ; apt upgrade -y ; apt autoremove -y ; apt clean -y)"
+00 03  *  * 01 ssh nas         "time (apt update -y ; apt upgrade -y ; apt autoremove -y ; apt clean -y)"
+30 03  *  * 01 ssh pi-01       "time (apt update -y ; apt upgrade -y ; apt autoremove -y ; apt clean -y)"
+00 04  *  * 01 ssh pi-02       "time (apt update -y ; apt upgrade -y ; apt autoremove -y ; apt clean -y)"
+30 04  *  * 01 ssh aio-01      "time (apt update -y ; apt upgrade -y ; apt autoremove -y ; apt clean -y)"
+00 05  *  * 01 ssh laptop-01   "time (apt update -y ; apt upgrade -y ; apt autoremove -y ; apt clean -y)"
+30 05  *  * 01 ssh laptop-02   "time (apt update -y ; apt upgrade -y ; apt autoremove -y ; apt clean -y)"
+
+00 06  *  *  *  ssh admin-ap    "time (rsync -av          /etc rsync://nas/exports/backups/host/admin-ap/)"
+10 06  *  *  *  ssh server-ap   "time (rsync -av          /etc rsync://nas/exports/backups/host/server-ap/)"
+20 06  *  *  *  ssh desktop-ap  "time (rsync -av          /etc rsync://nas/exports/backups/host/desktop-ap/)"
+30 06  *  *  *  ssh pi-01       "time (rsync -av          /etc rsync://nas/exports/backups/host/pi-01/)"
+40 06  *  *  *  ssh pi-02       "time (rsync -av          /etc rsync://nas/exports/backups/host/pi-02/)"
+
+00 06  *  *  06 ssh admin-ap    "time (rsync -av --delete /etc rsync://nas/exports/backups/host/admin-ap/)"
+10 06  *  *  06 ssh server-ap   "time (rsync -av --delete /etc rsync://nas/exports/backups/host/server-ap/)"
+20 06  *  *  06 ssh desktop-ap  "time (rsync -av --delete /etc rsync://nas/exports/backups/host/desktop-ap/)"
+30 07  *  *  06 ssh pi-02       "time (rsync -av --delete /etc rsync://nas/exports/backups/host/pi-02/)"
+30 06  *  *  06 ssh pi-01       "time (rsync -av --delete /etc rsync://nas/exports/backups/host/pi-01/)"
+
+00 08  *  *  *  ssh pi-01       "time fail2ban-client status sshd"
+#00 08  *  *  *  ssh pi-02       "time fail2ban-client status sshd"
+
+#30 08  *  *  *  ssh laptop-02 "time (rsync -av          home rsync://nas/exports/backups/host/laptop-02/ --exclude .m2 --exclude Downloads)"
+#00 18  *  *  06 ssh laptop-02 "time (rsync -av --delete home rsync://nas/exports/backups/host/laptop-02/ --exclude .m2 --exclude Downloads)"
+
+30 08  *  *  *  ssh laptop-03 "time (rsync -av          /exports/home/sfloess rsync://nas/exports/backups/host/laptop-03/exports/home/ --exclude .m2 --exclude Downloads)"
+00 18  *  *  06 ssh laptop-03 "time (rsync -av --delete /exports/home/sfloess rsync://nas/exports/backups/host/laptop-03/exports/home/ --exclude .m2 --exclude Downloads)"
+
+#00 08  *  *  *  ssh laptop-02 "time (rsync -av          /home rsync://nas/exports/backups/host/laptop-02/ --exclude .m2 --exclude Downloads)"
+#00 20  *  *  06 ssh laptop-02 "time (rsync -av --delete /home rsync://nas/exports/backups/host/laptop-02/ --exclude .m2 --exclude Downloads)"
+
+00 09  *  *  *  ssh laptop-03 "time (rsync -av          /home/sfloess rsync://nas/exports/backups/host/laptop-03/home/ --exclude .m2 --exclude Downloads)"
+00 21  *  *  06 ssh laptop-03 "time (rsync -av --delete /home/sfloess rsync://nas/exports/backups/host/laptop-03/home/ --exclude .m2 --exclude Downloads)"
+
+#00 10  *  *  *  ssh nas "time (rsync -av          /exports/backups /exports/usbd/)"
+#00 22  *  *  06 ssh nas "time (rsync -av --delete /exports/backups /exports/usbd/)"
+
+00 10  *  *  *  ssh desktop-ap "time (rsync -av          rsync://nas/exports/backups /exports/)"
+00 22  *  *  06 ssh desktop-ap "time (rsync -av --delete rsync://nas/exports/backups /exports/)"
+
+00 23  *  *  06 ssh aio-02    "time (fstrim -v /)"
+05 23  *  *  06 ssh laptop-01 "time (fstrim -v /)"
+10 23  *  *  06 ssh laptop-02 "time (fstrim -v /)"
+15 23  *  *  06 ssh laptop-03 "time (fstrim -v /)"
+20 23  *  *  06 ssh nas       "time (fstrim -v /)"
+25 23  *  *  06 ssh pi-01     "time (fstrim -v /)"
+30 23  *  *  06 ssh pi-02     "time (fstrim -v /)"
+
+00 04  *  *  * ssh -p 2222 root@dns reboot
+#00 05  *  *  * ssh -p 2222 root@server-ap reboot
+#00 06  *  *  * ssh -p 2222 root@desktop-ap reboot
